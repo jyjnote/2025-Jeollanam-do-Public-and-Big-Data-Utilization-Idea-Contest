@@ -4,6 +4,29 @@ import json
 from shapely.geometry import shape
 import os
 from gpt_engine.langchain_interface import GPTResponder
+from views import (
+    index_view,
+    recommendation_view,
+    city_detail_view,
+    report_view,
+    simulation_view
+)
+
+menu = st.sidebar.selectbox(
+    "📂 메뉴 선택",
+    ["정주지수", "정주지 추천", "도시별 상세보기", "정책 리포트", "정책 시뮬레이션"]
+)
+
+if menu == "정주지수":
+    index_view.render()
+elif menu == "정주지 추천":
+    recommendation_view.render()
+elif menu == "도시별 상세보기":
+    city_detail_view.render()
+elif menu == "정책 리포트":
+    report_view.render()
+elif menu == "정책 시뮬레이션":
+    simulation_view.render()
 
 st.set_page_config(layout="wide")
 
@@ -24,7 +47,9 @@ st.sidebar.write("여기에 메뉴나 필터, 설명 등 넣으세요.")
 st.title("전국 읍면동 위치 시각화")
 
 # GeoJSON 파일 로딩
-geojson_path = r"skorea-submunicipalities-2018-geo.json"
+base_dir = os.path.dirname(__file__)
+geojson_path = os.path.join(base_dir, "geo_jsons", "skorea-submunicipalities-2018-geo.json")
+
 with open(geojson_path, 'r', encoding='utf-8') as f:
     geojson = json.load(f)
 
