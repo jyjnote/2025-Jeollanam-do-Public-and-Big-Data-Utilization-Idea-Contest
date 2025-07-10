@@ -1,5 +1,38 @@
 import streamlit as st
-from gpt_engine.langchain_interface import GPTResponder
+import requests
+
+# ✅ Falcon-7B-Instruct 텍스트 생성용 API
+API_URL = "https://api-inference.huggingface.co/models/tiiuae/falcon-7b-instruct"
+headers = {
+    "Authorization": "Bearer",
+    "Content-Type": "application/json"
+}
+
+# ✅ Falcon-7B는 chat 형식이 아니라 text generation이므로 prompt만 사용
+def query(prompt):
+    try:
+        payload = {
+            "inputs": prompt,
+            "parameters": {
+                "temperature": 0.7,
+                "max_new_tokens": 512
+            }
+        }
+
+        response = requests.post(API_URL, headers=headers, json=payload)
+        response.raise_for_status()
+
+        result = response.json()
+        # ✅ Falcon 응답은 {'generated_text': "..."} 형태의 리스트임
+        if isinstance(result, list):
+            return result[0].get("generated_text", "⚠️ 결과 없음")
+        else:
+            return result.get("generated_text", "⚠️ 결과 없음")
+
+    except requests.exceptions.RequestException as e:
+        return f"요청 실패: {e}"
+    except requests.exceptions.JSONDecodeError:
+        return f"⚠️ JSON 디코딩 실패:\n{response.text}"
 
 def render():
     st.subheader("📄 정책 리포트 생성")
