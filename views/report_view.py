@@ -4,7 +4,7 @@ import requests
 # ✅ Falcon-7B-Instruct 텍스트 생성용 API
 API_URL = "https://api-inference.huggingface.co/models/tiiuae/falcon-7b-instruct"
 headers = {
-    "Authorization": "Bearer",
+    "Authorization": "Bearer ",
     "Content-Type": "application/json"
 }
 
